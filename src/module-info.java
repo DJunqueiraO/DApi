@@ -1,9 +1,0 @@
-/**
- * 
- */
-/**
- * 
- */
-module DApi {
-	requires gson;
-}

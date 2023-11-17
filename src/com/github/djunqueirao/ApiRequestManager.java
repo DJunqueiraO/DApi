@@ -10,7 +10,7 @@ import java.net.URL;
 
 import com.google.gson.Gson;
 
-public class ApiRequestManager {
+public abstract class ApiRequestManager {
 	
 	final String url;
 	
@@ -19,7 +19,7 @@ public class ApiRequestManager {
 	}
 	
 	/**
-	 * This method opens a connection from an endpoint.
+	 * This method opens a connection from an endPoint.
 	 * @param endPoint
 	 * @return HttpURLConnection
 	 */
