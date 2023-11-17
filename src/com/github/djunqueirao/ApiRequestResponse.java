@@ -7,24 +7,25 @@ public class ApiRequestResponse<T> {
 	
 	private HttpURLConnection connection;
 	private T data;
+	private Exception error;
 	
 	public ApiRequestResponse() {}
 	
-	public ApiRequestResponse(
-			final HttpURLConnection connection,
-			final T data
-	) {
-		super();
+	protected void setError(Exception error) {
+		error.printStackTrace();
+		this.error = error;
+	}
+	
+	protected void setConnection(HttpURLConnection connection) {
 		this.connection = connection;
+	}
+	
+	protected void setData(T data) {
 		this.data = data;
 	}
 	
-	public ApiRequestResponse(
-			final HttpURLConnection connection
-	) {
-		super();
-		this.connection = connection;
-		this.data = null;
+	public Exception getError() {
+		return error;
 	}
 	
 	public int getCode() {
