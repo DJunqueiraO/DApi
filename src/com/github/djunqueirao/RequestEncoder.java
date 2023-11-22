@@ -2,9 +2,8 @@ package com.github.djunqueirao;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
-public abstract class ApiRequestEncoder {
+public abstract class RequestEncoder {
 	
 	/**
 	 * This method is used to encode a string with parameters for UTF-8.
