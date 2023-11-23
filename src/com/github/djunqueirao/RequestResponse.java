@@ -6,13 +6,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 
-public class RequestResponse<T> {
+public class RequestResponse {
    private HttpURLConnection connection;
-   private T data;
    private Exception error;
    private String body;
 
-   public RequestResponse(RequestResponse<Object> apiRequestResponse) {
+   public RequestResponse(RequestResponse apiRequestResponse) {
       this.setBody(apiRequestResponse.getBody());
       this.setError(apiRequestResponse.getError());
       this.setConnection(apiRequestResponse.getConnection());
@@ -35,10 +34,6 @@ public class RequestResponse<T> {
 
    protected void setConnection(HttpURLConnection connection) {
       this.connection = connection;
-   }
-
-   protected void setData(T data) {
-      this.data = data;
    }
 
    protected void setBody(String body) {
@@ -89,9 +84,5 @@ public class RequestResponse<T> {
 
    public String getBody() {
       return this.body;
-   }
-
-   public T getData() {
-      return this.data;
    }
 }

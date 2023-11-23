@@ -1,6 +1,5 @@
 package com.github.djunqueirao;
 
-import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -33,24 +32,13 @@ public class RequestManager {
       return httpURLConnection;
    }
 
-   public <T> RequestResponse<Object> get(String endPoint) {
+   public RequestResponse get(String endPoint) {
       return this.get(endPoint, "UTF-8");
    }
 
-   public <T> RequestResponse<T> get(String endPoint, Class<T> model) {
-      return this.get(endPoint, model, "UTF-8");
-   }
-
-   public <T> RequestResponse<T> get(String endPoint, Class<T> model, String charsetName) {
-      RequestResponse<T> response = new RequestResponse<T>(this.get(endPoint, charsetName));
-      RequestResponse<Object> responseBody = this.get(endPoint, charsetName);
-      response.setData((new Gson()).fromJson(responseBody.getBody(), model));
-      return response;
-   }
-
-   public RequestResponse<Object> get(String endPoint, String charsetName) {
+   public RequestResponse get(String endPoint, String charsetName) {
       HttpURLConnection connection = null;
-      RequestResponse<Object> response = new RequestResponse<Object>();
+      RequestResponse response = new RequestResponse();
       try {
          connection = this.getHttpURLConnection(endPoint);
          connection.setRequestMethod("GET");
@@ -67,14 +55,14 @@ public class RequestManager {
       return response;
    }
 
-   public RequestResponse<Object> post(String endPoint, String model) {
+   public RequestResponse post(String endPoint, String model) {
       return this.post(endPoint, model, "UTF-8");
    }
 
-   public RequestResponse<Object> post(String endPoint, String model, String charsetName) {
+   public RequestResponse post(String endPoint, String model, String charsetName) {
       HttpURLConnection connection = null;
       OutputStream outputStream = null;
-      RequestResponse<Object> response = new RequestResponse<Object>();
+      RequestResponse response = new RequestResponse();
       try {
          connection = this.getHttpURLConnection(endPoint);
          connection.setRequestMethod("POST");
@@ -100,28 +88,17 @@ public class RequestManager {
       return response;
    }
 
-   public <T> RequestResponse<T> post(String endPoint, T model) {
-      RequestResponse<Object> responseBody = this.post(endPoint, (new Gson()).toJson(model));
-      RequestResponse<T> response = new RequestResponse<T>(responseBody);
-      return response;
-   }
-
-   public <T> RequestResponse<T> put(String endPoint, T model) {
-      return this.put(endPoint, model, "UTF-8");
-   }
-
-   public <T> RequestResponse<T> put(String endPoint, T model, String charsetName) {
+   public RequestResponse put(String endPoint, final String model, String charsetName) {
       HttpURLConnection connection = null;
       OutputStream outputStream = null;
-      RequestResponse<T> response = new RequestResponse<T>();
+      RequestResponse response = new RequestResponse();
       try {
-         String jsonInputString = (new Gson()).toJson(model);
          connection = this.getHttpURLConnection(endPoint);
          connection.setRequestMethod("PUT");
          connection.setRequestProperty("Content-Type", "application/json");
          connection.setDoOutput(true);
          outputStream = connection.getOutputStream();
-         byte[] input = jsonInputString.getBytes(charsetName);
+         byte[] input = model.getBytes(charsetName);
          outputStream.write(input, 0, input.length);
          outputStream.flush();
          response.setBody(connection, charsetName);
@@ -142,14 +119,14 @@ public class RequestManager {
       return response;
    }
 
-   public RequestResponse<Object> delete(String endPoint, long id) {
+   public RequestResponse delete(String endPoint, long id) {
       return this.delete(endPoint, id, "UTF-8");
    }
 
-   public RequestResponse<Object> delete(String endPoint, long id, String charsetName) {
+   public RequestResponse delete(String endPoint, long id, String charsetName) {
       HttpURLConnection connection = null;
       OutputStream outputStream = null;
-      RequestResponse<Object> response = new RequestResponse<Object>();
+      RequestResponse response = new RequestResponse();
       try {
          connection = this.getHttpURLConnection(endPoint + "/" + id);
          connection.setRequestMethod("DELETE");
