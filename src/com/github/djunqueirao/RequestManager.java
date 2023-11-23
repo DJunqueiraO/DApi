@@ -8,6 +8,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 
 public class RequestManager {
+	
    final String url;
 
    public RequestManager(String url) {
@@ -16,20 +17,17 @@ public class RequestManager {
 
    private HttpURLConnection getHttpURLConnection(String endPoint) {
       HttpURLConnection httpURLConnection = null;
-
       try {
          httpURLConnection = (HttpURLConnection)(new URL(this.url + endPoint)).openConnection();
-      } catch (IOException var8) {
-         var8.printStackTrace();
-      } catch (ClassCastException var9) {
-         var9.printStackTrace();
+      } catch (IOException e) {
+         e.printStackTrace();
+      } catch (ClassCastException e) {
+         e.printStackTrace();
       } finally {
          if (httpURLConnection != null) {
             httpURLConnection.disconnect();
          }
-
       }
-
       return httpURLConnection;
    }
 
@@ -56,13 +54,12 @@ public class RequestManager {
          connection.setRequestMethod("GET");
          response.setConnection(connection);
          response.setBody(connection, charsetName);
-      } catch (ProtocolException var9) {
-         response.setError(var9);
+      } catch (ProtocolException e) {
+         response.setError(e);
       } finally {
          if (connection != null) {
             connection.disconnect();
          }
-
       }
       return response;
    }
@@ -87,10 +84,10 @@ public class RequestManager {
          response.setBody(connection, charsetName);
          response.setConnection(connection);
          outputStream.close();
-      } catch (NullPointerException var12) {
-         response.setError(var12);
-      } catch (IOException var13) {
-         response.setError(var13);
+      } catch (NullPointerException e) {
+         response.setError(e);
+      } catch (IOException e) {
+         response.setError(e);
       } finally {
          if (connection != null) {
             connection.disconnect();
@@ -127,12 +124,12 @@ public class RequestManager {
          response.setBody(connection, charsetName);
          response.setConnection(connection);
          outputStream.close();
-      } catch (NullPointerException var14) {
-         response.setError(var14);
-      } catch (ProtocolException var15) {
-         response.setError(var15);
-      } catch (IOException var16) {
-         response.setError(var16);
+      } catch (NullPointerException e) {
+         response.setError(e);
+      } catch (ProtocolException e) {
+         response.setError(e);
+      } catch (IOException e) {
+         response.setError(e);
       } finally {
          if (connection != null) {
             connection.disconnect();
@@ -162,19 +159,17 @@ public class RequestManager {
          response.setBody(connection, charsetName);
          response.setConnection(connection);
          outputStream.close();
-      } catch (NullPointerException var14) {
-         response.setError(var14);
-      } catch (ProtocolException var15) {
-         response.setError(var15);
-      } catch (IOException var16) {
-         response.setError(var16);
+      } catch (NullPointerException e) {
+         response.setError(e);
+      } catch (ProtocolException e) {
+         response.setError(e);
+      } catch (IOException e) {
+         response.setError(e);
       } finally {
          if (connection != null) {
             connection.disconnect();
          }
-
       }
-
       return response;
    }
 }
