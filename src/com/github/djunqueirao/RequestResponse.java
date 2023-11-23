@@ -47,19 +47,15 @@ public class RequestResponse<T> {
 
    protected void setBody(HttpURLConnection connection, String charsetName) {
       String result = "";
-
       try {
          InputStream inputStream = connection.getResponseCode() >= 200 && connection.getResponseCode() < 300 ? connection.getInputStream() : connection.getErrorStream();
          BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, charsetName));
-
          for(String line = ""; (line = bufferedReader.readLine()) != null; result = result + line) {
          }
-
          bufferedReader.close();
-      } catch (IOException var7) {
-         var7.printStackTrace();
+      } catch (IOException e) {
+         e.printStackTrace();
       }
-
       this.body = result;
    }
 
@@ -70,11 +66,11 @@ public class RequestResponse<T> {
    public int getCode() {
       try {
          return this.connection.getResponseCode();
-      } catch (IOException var2) {
-         var2.printStackTrace();
+      } catch (IOException e) {
+         e.printStackTrace();
          return 0;
-      } catch (NullPointerException var3) {
-         var3.printStackTrace();
+      } catch (NullPointerException e) {
+         e.printStackTrace();
          return 0;
       }
    }
@@ -82,12 +78,12 @@ public class RequestResponse<T> {
    public String getMessage() {
       try {
          return this.connection.getResponseMessage();
-      } catch (IOException var2) {
-         var2.printStackTrace();
-         return var2.getMessage();
-      } catch (NullPointerException var3) {
-         var3.printStackTrace();
-         return var3.getMessage();
+      } catch (IOException e) {
+         e.printStackTrace();
+         return e.getMessage();
+      } catch (NullPointerException e) {
+         e.printStackTrace();
+         return e.getMessage();
       }
    }
 
