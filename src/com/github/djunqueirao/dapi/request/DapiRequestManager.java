@@ -1,12 +1,12 @@
-package com.github.djunqueirao.main;
+package com.github.djunqueirao.dapi.request;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.function.Consumer;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -14,10 +14,19 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 
 public class DapiRequestManager {
+	
 	final String url;
+	Consumer<HttpsURLConnection> onConnect = new Consumer<HttpsURLConnection>() {
+		@Override
+		public void accept(HttpsURLConnection t) {}
+	};
 
 	public DapiRequestManager(String url) {
 		this.url = url;
+	}
+	
+	public void setOnConnect(Consumer<HttpsURLConnection> onConnect) {
+		this.onConnect = onConnect;
 	}
 
 	public void setSSLVerification(final boolean enabled) {
@@ -43,6 +52,10 @@ public class DapiRequestManager {
 
 		try {
 			httpURLConnection = (HttpURLConnection) (new URL(this.url + endPoint)).openConnection();
+			httpURLConnection.setRequestProperty(
+					DapiRequestProperty.Key.CONTENT_TYPE, DapiRequestProperty.Value.APPLICATION_JSON
+			);
+			onConnect.accept((HttpsURLConnection) httpURLConnection);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassCastException e) {
@@ -88,7 +101,6 @@ public class DapiRequestManager {
 		try {
 			connection = this.getHttpURLConnection(endPoint);
 			connection.setRequestMethod("POST");
-			connection.setRequestProperty("Content-Type", "application/json");
 			connection.setDoOutput(true);
 			outputStream = new DapiOutputStream(connection);
 			byte[] input = model.getBytes(charsetName);
@@ -122,7 +134,6 @@ public class DapiRequestManager {
 		try {
 			connection = this.getHttpURLConnection(endPoint);
 			connection.setRequestMethod("PUT");
-			connection.setRequestProperty("Content-Type", "application/json");
 			connection.setDoOutput(true);
 			outputStream = new DapiOutputStream(connection);
 			byte[] input = model.getBytes(charsetName);
@@ -158,7 +169,6 @@ public class DapiRequestManager {
 		try {
 			connection = this.getHttpURLConnection(endPoint + "/" + id);
 			connection.setRequestMethod("DELETE");
-			connection.setRequestProperty("Content-Type", "application/json");
 			connection.setDoOutput(true);
 			outputStream = new DapiOutputStream(connection);
 			byte[] input = String.format("{\"id\": %d}", id).getBytes(charsetName);

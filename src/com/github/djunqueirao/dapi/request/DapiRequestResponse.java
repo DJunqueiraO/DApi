@@ -1,9 +1,7 @@
-package com.github.djunqueirao.main;
+package com.github.djunqueirao.dapi.request;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 
 public class DapiRequestResponse {
@@ -42,23 +40,19 @@ public class DapiRequestResponse {
 
 	protected void setBody(HttpURLConnection connection, String charsetName) {
 		String result = "";
-		BufferedReader bufferedReader = null;
+		DapiBufferedReader bufferedReader = null;
 		try {
 			InputStream inputStream = connection.getResponseCode() >= 200 && connection.getResponseCode() < 300
 					? connection.getInputStream()
 					: connection.getErrorStream();
-			bufferedReader = new BufferedReader(new InputStreamReader(inputStream, charsetName));
+			bufferedReader = new DapiBufferedReader(inputStream, charsetName);
 			for (String line = ""; (line = bufferedReader.readLine()) != null; result = result + line) {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			if (bufferedReader != null) {
-				try {
-					bufferedReader.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				bufferedReader.close();
 			}
 		}
 		this.body = result;

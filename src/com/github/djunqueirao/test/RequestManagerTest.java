@@ -8,8 +8,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import com.github.djunqueirao.main.DapiRequestManager;
-import com.github.djunqueirao.main.DapiRequestResponse;
+import com.github.djunqueirao.dapi.request.DapiRequestManager;
+import com.github.djunqueirao.dapi.request.DapiRequestResponse;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RequestManagerTest {

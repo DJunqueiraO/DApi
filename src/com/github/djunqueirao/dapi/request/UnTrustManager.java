@@ -1,4 +1,4 @@
-package com.github.djunqueirao.main;
+package com.github.djunqueirao.dapi.request;
 
 import java.security.cert.CertificateException;
 
