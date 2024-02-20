@@ -13,10 +13,10 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 
-public class RequestManager {
+public class DapiRequestManager {
 	final String url;
 
-	public RequestManager(String url) {
+	public DapiRequestManager(String url) {
 		this.url = url;
 	}
 
@@ -55,13 +55,13 @@ public class RequestManager {
 		return httpURLConnection;
 	}
 
-	public RequestResponse get(String endPoint) {
+	public DapiRequestResponse get(String endPoint) {
 		return this.get(endPoint, "UTF-8");
 	}
 
-	public RequestResponse get(String endPoint, String charsetName) {
+	public DapiRequestResponse get(String endPoint, String charsetName) {
 		HttpURLConnection connection = null;
-		RequestResponse response = new RequestResponse();
+		DapiRequestResponse response = new DapiRequestResponse();
 		try {
 			connection = this.getHttpURLConnection(endPoint);
 			connection.setRequestMethod("GET");
@@ -77,105 +77,108 @@ public class RequestManager {
 		return response;
 	}
 
-	public RequestResponse post(String endPoint, String model) {
+	public DapiRequestResponse post(String endPoint, String model) {
 		return this.post(endPoint, model, "UTF-8");
 	}
 
-	public RequestResponse post(String endPoint, String model, String charsetName) {
+	public DapiRequestResponse post(String endPoint, String model, String charsetName) {
 		HttpURLConnection connection = null;
-		OutputStream outputStream = null;
-		RequestResponse response = new RequestResponse();
+		DapiOutputStream outputStream = null;
+		DapiRequestResponse response = new DapiRequestResponse();
 		try {
 			connection = this.getHttpURLConnection(endPoint);
 			connection.setRequestMethod("POST");
 			connection.setRequestProperty("Content-Type", "application/json");
 			connection.setDoOutput(true);
-			outputStream = connection.getOutputStream();
+			outputStream = new DapiOutputStream(connection);
 			byte[] input = model.getBytes(charsetName);
 			outputStream.write(input, 0, input.length);
 			outputStream.flush();
 			response.setBody(connection, charsetName);
 			response.setConnection(connection);
-			outputStream.close();
-		} catch (NullPointerException var12) {
-			response.setError(var12);
-		} catch (IOException var13) {
-			response.setError(var13);
+		} catch (NullPointerException e) {
+			response.setError(e);
+		} catch (IOException e) {
+			response.setError(e);
 		} finally {
 			if (connection != null) {
 				connection.disconnect();
 			}
-
+			if(outputStream != null) {
+				outputStream.close();
+			}
 		}
 		return response;
 	}
 
-	public RequestResponse put(String endPoint, final String model) {
+	public DapiRequestResponse put(String endPoint, final String model) {
 		return this.put(endPoint, model, "UTF-8");
 	}
 	
-	public RequestResponse put(String endPoint, final String model, String charsetName) {
+	public DapiRequestResponse put(String endPoint, final String model, String charsetName) {
 		HttpURLConnection connection = null;
-		OutputStream outputStream = null;
-		RequestResponse response = new RequestResponse();
+		DapiOutputStream outputStream = null;
+		DapiRequestResponse response = new DapiRequestResponse();
 		try {
 			connection = this.getHttpURLConnection(endPoint);
 			connection.setRequestMethod("PUT");
 			connection.setRequestProperty("Content-Type", "application/json");
 			connection.setDoOutput(true);
-			outputStream = connection.getOutputStream();
+			outputStream = new DapiOutputStream(connection);
 			byte[] input = model.getBytes(charsetName);
 			outputStream.write(input, 0, input.length);
 			outputStream.flush();
 			response.setBody(connection, charsetName);
 			response.setConnection(connection);
-			outputStream.close();
-		} catch (NullPointerException var14) {
-			response.setError(var14);
-		} catch (ProtocolException var15) {
-			response.setError(var15);
-		} catch (IOException var16) {
-			response.setError(var16);
+		} catch (NullPointerException e) {
+			response.setError(e);
+		} catch (ProtocolException e) {
+			response.setError(e);
+		} catch (IOException e) {
+			response.setError(e);
 		} finally {
 			if (connection != null) {
 				connection.disconnect();
 			}
-
+			if(outputStream != null) {
+				outputStream.close();
+			}
 		}
 		return response;
 	}
 
-	public RequestResponse delete(String endPoint, long id) {
+	public DapiRequestResponse delete(String endPoint, long id) {
 		return this.delete(endPoint, id, "UTF-8");
 	}
 
-	public RequestResponse delete(String endPoint, long id, String charsetName) {
+	public DapiRequestResponse delete(String endPoint, long id, String charsetName) {
 		HttpURLConnection connection = null;
-		OutputStream outputStream = null;
-		RequestResponse response = new RequestResponse();
+		DapiOutputStream outputStream = null;
+		DapiRequestResponse response = new DapiRequestResponse();
 		try {
 			connection = this.getHttpURLConnection(endPoint + "/" + id);
 			connection.setRequestMethod("DELETE");
 			connection.setRequestProperty("Content-Type", "application/json");
 			connection.setDoOutput(true);
-			outputStream = connection.getOutputStream();
+			outputStream = new DapiOutputStream(connection);
 			byte[] input = String.format("{\"id\": %d}", id).getBytes(charsetName);
 			outputStream.write(input, 0, input.length);
 			outputStream.flush();
 			response.setBody(connection, charsetName);
 			response.setConnection(connection);
-			outputStream.close();
-		} catch (NullPointerException var14) {
-			response.setError(var14);
-		} catch (ProtocolException var15) {
-			response.setError(var15);
-		} catch (IOException var16) {
-			response.setError(var16);
+		} catch (NullPointerException e) {
+			response.setError(e);
+		} catch (ProtocolException e) {
+			response.setError(e);
+		} catch (IOException e) {
+			response.setError(e);
 		} finally {
 			if (connection != null) {
 				connection.disconnect();
 			}
-
+			if(outputStream != null) {
+				outputStream.close();
+			}
 		}
 
 		return response;

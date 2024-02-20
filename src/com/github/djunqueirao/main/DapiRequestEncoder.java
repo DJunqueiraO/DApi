@@ -3,7 +3,7 @@ package com.github.djunqueirao.main;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-public abstract class RequestEncoder {
+public abstract class DapiRequestEncoder {
    public static String encodeToUtf8(String format, Object... args) {
       Object[] encodedArgs = args;
       for(int i = 0; i < encodedArgs.length; ++i) {
