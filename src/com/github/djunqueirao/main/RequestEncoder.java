@@ -1,4 +1,4 @@
-package com.github.djunqueirao;
+package com.github.djunqueirao.main;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

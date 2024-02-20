@@ -1,4 +1,4 @@
-package com.github.djunqueirao;
+package com.github.djunqueirao.main;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -85,4 +85,12 @@ public class RequestResponse {
    public String getBody() {
       return this.body;
    }
+   
+   @Override
+	public String toString() {
+		return String.format(
+			"{\"body\": \"%s\", \"code\": \"%d\", \"error\": \"%o\", \"message\": \"%s\"}", 
+			getBody(), getCode(), getError(), getMessage()
+		);
+	}
 }
