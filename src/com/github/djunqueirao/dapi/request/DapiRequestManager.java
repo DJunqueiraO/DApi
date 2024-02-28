@@ -16,16 +16,16 @@ import javax.net.ssl.TrustManager;
 public class DapiRequestManager {
 	
 	final String url;
-	Consumer<HttpsURLConnection> onConnect = new Consumer<HttpsURLConnection>() {
+	DapiOnConnect onConnect = new DapiOnConnect() {
 		@Override
-		public void accept(HttpsURLConnection t) {}
+		public void accept(HttpsURLConnection connection) {}
 	};
 
 	public DapiRequestManager(String url) {
 		this.url = url;
 	}
 	
-	public void setOnConnect(Consumer<HttpsURLConnection> onConnect) {
+	public void setOnConnect(DapiOnConnect onConnect) {
 		this.onConnect = onConnect;
 	}
 
