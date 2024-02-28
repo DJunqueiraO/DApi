@@ -89,10 +89,4 @@ public class DapiRequestResponse {
 	public String getBody() {
 		return this.body;
 	}
-
-	@Override
-	public String toString() {
-		return String.format("{\"body\": \"%s\", \"code\": \"%d\", \"error\": \"%o\", \"message\": \"%s\"}", getBody(),
-				getCode(), getError(), getMessage());
-	}
 }
