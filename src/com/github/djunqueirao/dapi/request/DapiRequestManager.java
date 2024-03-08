@@ -16,7 +16,6 @@ public class DapiRequestManager {
 	
 	final String url;
 	DapiOnConnect onConnect = new DapiOnConnect() {
-		@Override
 		public void accept(HttpsURLConnection connection) {}
 	};
 
