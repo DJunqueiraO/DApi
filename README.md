@@ -46,7 +46,7 @@ public class Main {
 
 ## Como Utilizar
 
-1. Faça o download do arquivo JAR da biblioteca.
+1. Faça o download do arquivo JAR da biblioteca em /output.
 2. Adicione o arquivo JAR ao classpath do seu projeto Java.
 3. Importe as classes necessárias no seu código.
 
