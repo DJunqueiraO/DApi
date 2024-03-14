@@ -1,4 +1,4 @@
-# Biblioteca Java para Requisições HTTP
+# Biblioteca Dapi, para Requisições HTTP
 
 Esta é uma biblioteca Java desenvolvida para simplificar a realização de requisições HTTP utilizando os métodos GET, POST, PUT e DELETE. Ela oferece uma interface fácil de usar para interagir com APIs RESTful e executar operações básicas de HTTP.
 
