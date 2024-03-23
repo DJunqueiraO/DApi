@@ -1,7 +1,7 @@
 package com.github.djunqueirao.dapi.request;
 
-import javax.net.ssl.HttpsURLConnection;
+import java.net.HttpURLConnection;
 
 public interface DapiOnConnect {
-	public void accept(HttpsURLConnection connection);
+	public void accept(HttpURLConnection connection);
 }

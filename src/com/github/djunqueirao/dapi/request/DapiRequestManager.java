@@ -14,13 +14,22 @@ import javax.net.ssl.TrustManager;
 
 public class DapiRequestManager {
 	
-	final String url;
-	DapiOnConnect onConnect = new DapiOnConnect() {
-		public void accept(HttpsURLConnection connection) {}
+	private final String url;
+	private DapiOnConnect onConnect = new DapiOnConnect() {
+		public void accept(HttpURLConnection connection) {}
 	};
+	private String defaultCharsetName = "UTF-8";
 
 	public DapiRequestManager(String url) {
 		this.url = url;
+	}
+	
+	public String getDefaultCharsetName() {
+		return defaultCharsetName;
+	}
+	
+	public void setDefaultCharsetName(String defaultCharsetName) {
+		this.defaultCharsetName = defaultCharsetName;
 	}
 	
 	public void setOnConnect(DapiOnConnect onConnect) {
@@ -53,7 +62,7 @@ public class DapiRequestManager {
 			httpURLConnection.setRequestProperty(
 					DapiRequestProperty.Key.CONTENT_TYPE, DapiRequestProperty.Value.APPLICATION_JSON
 			);
-			onConnect.accept((HttpsURLConnection) httpURLConnection);
+			onConnect.accept(httpURLConnection);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassCastException e) {
@@ -67,7 +76,7 @@ public class DapiRequestManager {
 	}
 
 	public DapiRequestResponse get(String endPoint) {
-		return this.get(endPoint, "UTF-8");
+		return this.get(endPoint, defaultCharsetName);
 	}
 
 	public DapiRequestResponse get(String endPoint, String charsetName) {
@@ -89,7 +98,7 @@ public class DapiRequestManager {
 	}
 
 	public DapiRequestResponse post(String endPoint, String model) {
-		return this.post(endPoint, model, "UTF-8");
+		return this.post(endPoint, model, defaultCharsetName);
 	}
 
 	public DapiRequestResponse post(String endPoint, String model, String charsetName) {
@@ -122,7 +131,7 @@ public class DapiRequestManager {
 	}
 
 	public DapiRequestResponse put(String endPoint, final String model) {
-		return this.put(endPoint, model, "UTF-8");
+		return this.put(endPoint, model, defaultCharsetName);
 	}
 	
 	public DapiRequestResponse put(String endPoint, final String model, String charsetName) {
@@ -157,7 +166,7 @@ public class DapiRequestManager {
 	}
 
 	public DapiRequestResponse delete(String endPoint, long id) {
-		return this.delete(endPoint, id, "UTF-8");
+		return this.delete(endPoint, id, defaultCharsetName);
 	}
 
 	public DapiRequestResponse delete(String endPoint, long id, String charsetName) {
@@ -189,6 +198,41 @@ public class DapiRequestManager {
 			}
 		}
 
+		return response;
+	}
+
+	public DapiRequestResponse delete(String endPoint, final String model) {
+		return this.put(endPoint, model, defaultCharsetName);
+	}
+	
+	public DapiRequestResponse delete(String endPoint, final String model, String charsetName) {
+		HttpURLConnection connection = null;
+		DapiOutputStream outputStream = null;
+		DapiRequestResponse response = new DapiRequestResponse();
+		try {
+			connection = this.getHttpURLConnection(endPoint);
+			connection.setRequestMethod("DELETE");
+			connection.setDoOutput(true);
+			outputStream = new DapiOutputStream(connection);
+			byte[] input = model.getBytes(charsetName);
+			outputStream.write(input, 0, input.length);
+			outputStream.flush();
+			response.setBody(connection, charsetName);
+			response.setConnection(connection);
+		} catch (NullPointerException e) {
+			response.setError(e);
+		} catch (ProtocolException e) {
+			response.setError(e);
+		} catch (IOException e) {
+			response.setError(e);
+		} finally {
+			if (connection != null) {
+				connection.disconnect();
+			}
+			if(outputStream != null) {
+				outputStream.close();
+			}
+		}
 		return response;
 	}
 }
