@@ -27,7 +27,7 @@ class RequestManagerTest {
 	void shouldPerformGet() {
 		DapiRequestResponse response = requestManager.get("/test");
 		Assertions.assertNotNull(response.getBody());
-		Assertions.assertEquals(200, response.getCode());
+		Assertions.assertEquals(200, response.getStatus());
 		Assertions.assertNull(response.getError());
 		Assertions.assertNotNull(response.getMessage());
 	}
@@ -37,7 +37,7 @@ class RequestManagerTest {
 	void shouldPerformPost() {
 		DapiRequestResponse response = requestManager.post("/test", "{\"message\": \"test\"}");
 		Assertions.assertNotNull(response.getBody());
-		Assertions.assertEquals(201, response.getCode());
+		Assertions.assertEquals(201, response.getStatus());
 		Assertions.assertNull(response.getError());
 		Assertions.assertNotNull(response.getMessage());
 	}
@@ -47,7 +47,7 @@ class RequestManagerTest {
 	void shouldPerformPut() {
 		DapiRequestResponse response = requestManager.put("/test/" + 1, String.format("{\"message\": \"%s\"}", LocalDateTime.now()));
 		Assertions.assertNotNull(response.getBody());
-		Assertions.assertEquals(200, response.getCode());
+		Assertions.assertEquals(200, response.getStatus());
 		Assertions.assertNull(response.getError());
 		Assertions.assertNotNull(response.getMessage());
 	}
@@ -57,7 +57,7 @@ class RequestManagerTest {
 	void shouldPerformDelete() {
 		DapiRequestResponse response = requestManager.delete("/test/", 1);
 		Assertions.assertNotNull(response.getBody());
-		Assertions.assertEquals(200, response.getCode());
+		Assertions.assertEquals(200, response.getStatus());
 		Assertions.assertNull(response.getError());
 		Assertions.assertNotNull(response.getMessage());
 	}

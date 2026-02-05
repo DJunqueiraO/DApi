@@ -54,7 +54,9 @@ public class DapiRequestManager {
 			httpURLConnection.setRequestProperty(
 					DapiRequestProperty.Key.CONTENT_TYPE, DapiRequestProperty.Value.APPLICATION_JSON
 			);
-			onConnect.accept((HttpsURLConnection) httpURLConnection);
+			if (httpURLConnection instanceof HttpsURLConnection) {
+			    onConnect.accept((HttpsURLConnection) httpURLConnection);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassCastException e) {

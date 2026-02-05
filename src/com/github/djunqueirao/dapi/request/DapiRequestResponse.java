@@ -18,10 +18,6 @@ public class DapiRequestResponse {
 	public DapiRequestResponse() {
 	}
 
-	protected HttpURLConnection getConnection() {
-		return this.connection;
-	}
-
 	protected void setError(Exception error) {
 		if (error != null) {
 			error.printStackTrace();
@@ -58,11 +54,15 @@ public class DapiRequestResponse {
 		this.body = result;
 	}
 
+	public HttpURLConnection getConnection() {
+		return this.connection;
+	}
+
 	public Exception getError() {
 		return this.error;
 	}
 
-	public int getCode() {
+	public int getStatus() {
 		try {
 			return this.connection.getResponseCode();
 		} catch (IOException e) {
