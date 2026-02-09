@@ -13,182 +13,148 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 
 public class DapiRequestManager {
-	
-	final String url;
-	DapiOnConnect onConnect = new DapiOnConnect() {
-		public void accept(HttpsURLConnection connection) {}
-	};
 
-	public DapiRequestManager(String url) {
-		this.url = url;
-	}
-	
-	public void setOnConnect(DapiOnConnect onConnect) {
-		this.onConnect = onConnect;
-	}
+    private final String url;
+    
+    private static final String GET = "GET";
+    private static final String POST = "POST";
+    private static final String PUT = "PUT";
+    private static final String DELETE = "DELETE";
+    
+    DapiOnConnect onConnect = new DapiOnConnect() {
+        @Override
+        public void accept(HttpsURLConnection connection) {}
+    };
 
-	public void setSSLVerification(final boolean enabled) {
-		if(enabled) {
-			SSLSocketFactory defaultSSLSocketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-			HttpsURLConnection.setDefaultSSLSocketFactory(defaultSSLSocketFactory);
-		} else {
-			SSLContext sc;
-			try {
-				sc = SSLContext.getInstance("SSL");
-				sc.init(null, new TrustManager[] { new UnTrustManager() }, new java.security.SecureRandom());
-				HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-			} catch (NoSuchAlgorithmException e) {
-				e.printStackTrace();
-			} catch (KeyManagementException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+    public DapiRequestManager(String url) {
+        this.url = url;
+    }
 
-	private HttpURLConnection getHttpURLConnection(String endPoint) {
-		HttpURLConnection httpURLConnection = null;
+    public void setOnConnect(DapiOnConnect onConnect) {
+        this.onConnect = onConnect;
+    }
 
-		try {
-			httpURLConnection = (HttpURLConnection) (new URL(this.url + endPoint)).openConnection();
-			httpURLConnection.setRequestProperty(
-					DapiRequestProperty.Key.CONTENT_TYPE, DapiRequestProperty.Value.APPLICATION_JSON
-			);
-			onConnect.accept((HttpsURLConnection) httpURLConnection);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ClassCastException e) {
-			e.printStackTrace();
-		} finally {
-			if (httpURLConnection != null) {
-				httpURLConnection.disconnect();
-			}
-		}
-		return httpURLConnection;
-	}
+    public void setSSLVerification(final boolean enabled) {
+        if (enabled) {
+            SSLSocketFactory defaultSSLSocketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+            HttpsURLConnection.setDefaultSSLSocketFactory(defaultSSLSocketFactory);
+        } else {
+            try {
+                SSLContext sslContext = SSLContext.getInstance("SSL");
+                sslContext.init(null, new TrustManager[] { new UnTrustManager() }, new java.security.SecureRandom());
+                HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+            } catch (NoSuchAlgorithmException | KeyManagementException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-	public DapiRequestResponse get(String endPoint) {
-		return this.get(endPoint, "UTF-8");
-	}
+    private HttpURLConnection getHttpURLConnection(String endPoint) {
+        try {
+            URL target = new URL(this.url + endPoint);
+            HttpURLConnection connection = (HttpURLConnection) target.openConnection();
 
-	public DapiRequestResponse get(String endPoint, String charsetName) {
-		HttpURLConnection connection = null;
-		DapiRequestResponse response = new DapiRequestResponse();
-		try {
-			connection = this.getHttpURLConnection(endPoint);
-			connection.setRequestMethod("GET");
-			response.setConnection(connection);
-			response.setBody(connection, charsetName);
-		} catch (ProtocolException e) {
-			response.setError(e);
-		} finally {
-			if (connection != null) {
-				connection.disconnect();
-			}
-		}
-		return response;
-	}
+            connection.setRequestProperty(
+                DapiRequestProperty.Key.CONTENT_TYPE,
+                DapiRequestProperty.Value.APPLICATION_JSON
+            );
+            connection.setRequestProperty("Accept", DapiRequestProperty.Value.APPLICATION_JSON);
 
-	public DapiRequestResponse post(String endPoint, String model) {
-		return this.post(endPoint, model, "UTF-8");
-	}
+            if (connection instanceof HttpsURLConnection) {
+                onConnect.accept((HttpsURLConnection) connection);
+            }
 
-	public DapiRequestResponse post(String endPoint, String model, String charsetName) {
-		HttpURLConnection connection = null;
-		DapiOutputStream outputStream = null;
-		DapiRequestResponse response = new DapiRequestResponse();
-		try {
-			connection = this.getHttpURLConnection(endPoint);
-			connection.setRequestMethod("POST");
-			connection.setDoOutput(true);
-			outputStream = new DapiOutputStream(connection);
-			byte[] input = model.getBytes(charsetName);
-			outputStream.write(input, 0, input.length);
-			outputStream.flush();
-			response.setBody(connection, charsetName);
-			response.setConnection(connection);
-		} catch (NullPointerException e) {
-			response.setError(e);
-		} catch (IOException e) {
-			response.setError(e);
-		} finally {
-			if (connection != null) {
-				connection.disconnect();
-			}
-			if(outputStream != null) {
-				outputStream.close();
-			}
-		}
-		return response;
-	}
+            return connection;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-	public DapiRequestResponse put(String endPoint, final String model) {
-		return this.put(endPoint, model, "UTF-8");
-	}
-	
-	public DapiRequestResponse put(String endPoint, final String model, String charsetName) {
-		HttpURLConnection connection = null;
-		DapiOutputStream outputStream = null;
-		DapiRequestResponse response = new DapiRequestResponse();
-		try {
-			connection = this.getHttpURLConnection(endPoint);
-			connection.setRequestMethod("PUT");
-			connection.setDoOutput(true);
-			outputStream = new DapiOutputStream(connection);
-			byte[] input = model.getBytes(charsetName);
-			outputStream.write(input, 0, input.length);
-			outputStream.flush();
-			response.setBody(connection, charsetName);
-			response.setConnection(connection);
-		} catch (NullPointerException e) {
-			response.setError(e);
-		} catch (ProtocolException e) {
-			response.setError(e);
-		} catch (IOException e) {
-			response.setError(e);
-		} finally {
-			if (connection != null) {
-				connection.disconnect();
-			}
-			if(outputStream != null) {
-				outputStream.close();
-			}
-		}
-		return response;
-	}
+    public DapiRequestResponse get(String endPoint) {
+        return request(GET, endPoint, null, "UTF-8");
+    }
 
-	public DapiRequestResponse delete(String endPoint, long id) {
-		return this.delete(endPoint, id, "UTF-8");
-	}
+    public DapiRequestResponse get(String endPoint, String model) {
+        return request(GET, endPoint, model, "UTF-8");
+    }
 
-	public DapiRequestResponse delete(String endPoint, long id, String charsetName) {
-		HttpURLConnection connection = null;
-		DapiOutputStream outputStream = null;
-		DapiRequestResponse response = new DapiRequestResponse();
-		try {
-			connection = this.getHttpURLConnection(endPoint + "/" + id);
-			connection.setRequestMethod("DELETE");
-			connection.setDoOutput(true);
-			outputStream = new DapiOutputStream(connection);
-			byte[] input = String.format("{\"id\": %d}", id).getBytes(charsetName);
-			outputStream.write(input, 0, input.length);
-			outputStream.flush();
-			response.setBody(connection, charsetName);
-			response.setConnection(connection);
-		} catch (NullPointerException e) {
-			response.setError(e);
-		} catch (ProtocolException e) {
-			response.setError(e);
-		} catch (IOException e) {
-			response.setError(e);
-		} finally {
-			if (connection != null) {
-				connection.disconnect();
-			}
-			if(outputStream != null) {
-				outputStream.close();
-			}
-		}
+    public DapiRequestResponse get(String endPoint, String model, String charsetName) {
+        return request(GET, endPoint, model, charsetName);
+    }
 
-		return response;
-	}
+    public DapiRequestResponse post(String endPoint) {
+        return request(POST, endPoint, null, "UTF-8");
+    }
+
+    public DapiRequestResponse post(String endPoint, String model) {
+        return request(POST, endPoint, model, "UTF-8");
+    }
+
+    public DapiRequestResponse post(String endPoint, String model, String charsetName) {
+        return request(POST, endPoint, model, charsetName);
+    }
+
+    public DapiRequestResponse put(String endPoint) {
+        return request(PUT, endPoint, null, "UTF-8");
+    }
+
+    public DapiRequestResponse put(String endPoint, String model) {
+        return request(PUT, endPoint, model, "UTF-8");
+    }
+
+    public DapiRequestResponse put(String endPoint, String model, String charsetName) {
+        return request(PUT, endPoint, model, charsetName);
+    }
+
+    public DapiRequestResponse delete(String endPoint) {
+        return request(DELETE, endPoint, null, "UTF-8");
+    }
+
+    public DapiRequestResponse delete(String endPoint, String model) {
+        return request(DELETE, endPoint, model, "UTF-8");
+    }
+
+    public DapiRequestResponse delete(String endPoint, String model, String charsetName) {
+        return request(DELETE, endPoint, model, charsetName);
+    }
+
+    private DapiRequestResponse request(String method, String endPoint, String model, String charsetName) {
+        HttpURLConnection connection = null;
+        DapiRequestResponse response = new DapiRequestResponse();
+
+        try {
+            connection = getHttpURLConnection(endPoint);
+            if (connection == null) {
+                throw new IOException("Could not open connection (null). Check URL/endPoint.");
+            }
+
+            connection.setRequestMethod(method);
+
+            if (model != null) {
+                connection.setRequestProperty(
+                    DapiRequestProperty.Key.CONTENT_TYPE,
+                    DapiRequestProperty.Value.APPLICATION_JSON + "; charset=" + charsetName
+                );
+
+                new DapiOutputStream(connection).writeFlush(model, charsetName);
+            }
+
+            response.setConnection(connection);
+            response.setBody(connection, charsetName);
+
+        } catch (ProtocolException e) {
+            response.setError(e);
+        } catch (IOException e) {
+            response.setError(e);
+        } catch (RuntimeException e) {
+            response.setError(e);
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+
+        return response;
+    }
 }
