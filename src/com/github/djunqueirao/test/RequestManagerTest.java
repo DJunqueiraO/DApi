@@ -55,7 +55,7 @@ class RequestManagerTest {
 	@Test
 	@DisplayName("Should delete a body")
 	void shouldPerformDelete() {
-		DapiRequestResponse response = requestManager.delete("/test/", 1);
+		DapiRequestResponse response = requestManager.delete("/test/1");
 		Assertions.assertNotNull(response.getBody());
 		Assertions.assertEquals(200, response.getCode());
 		Assertions.assertNull(response.getError());
